@@ -1,51 +1,96 @@
 <?php
 
+session_start();
+
 require '../config/koneksi.php';
 
 $data = $db->query(
-    "SELECT * FROM lapangan"
+    "SELECT * FROM lapangan
+WHERE status='aktif'"
 );
 
-while ($row = $data->fetch(PDO::FETCH_ASSOC)) {
-
+include '../layouts/header.php';
 ?>
 
-    <div class="card mb-3">
+<div class="container-fluid">
 
-        <div class="card-body">
+    <div class="row">
 
-            <h4>
+        <?php include '../layouts/sidebar_pelanggan.php'; ?>
 
-                <?= $row['nama_lapangan'] ?>
+        <div class="col-md-10">
 
-            </h4>
+            <div class="content">
 
-            <p>
+                <h2 class="mb-4">
+                    Booking Lapangan
+                </h2>
 
-                <?= $row['jenis_olahraga'] ?>
+                <div class="row">
 
-            </p>
+                    <?php
+                    while (
+                        $row =
+                        $data->fetch(PDO::FETCH_ASSOC)
+                    ) {
+                    ?>
 
-            <h5>
+                        <div class="col-md-4">
 
-                Rp <?= number_format(
-                        $row['harga_per_jam']
-                    ) ?>
+                            <div class="card shadow mb-4">
 
-            </h5>
+                                <img
+                                    src="../assets/img/banner.jpg"
+                                    height="180"
+                                    style="object-fit:cover;">
 
-            <a
-                href="booking.php?id=<?= $row['id_lapangan'] ?>"
-                class="btn btn-success">
+                                <div class="card-body">
 
-                Booking
+                                    <h5>
 
-            </a>
+                                        <?= $row['nama_lapangan'] ?>
+
+                                    </h5>
+
+                                    <p>
+
+                                        <?= $row['jenis_olahraga'] ?>
+
+                                    </p>
+
+                                    <h4 class="text-success">
+
+                                        Rp
+                                        <?= number_format(
+                                            $row['harga_per_jam']
+                                        ) ?>
+
+                                    </h4>
+
+                                    <a
+                                        href="booking.php?id=<?= $row['id_lapangan'] ?>"
+                                        class="btn btn-success w-100">
+
+                                        Booking
+
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    <?php } ?>
+
+                </div>
+
+            </div>
 
         </div>
 
     </div>
 
-<?php
-}
-?>
+</div>
+
+<?php include '../layouts/footer.php'; ?>

@@ -12,79 +12,121 @@ include '../layouts/header.php';
 
     <div class="row">
 
-        <?php include '../layouts/sidebar_admin.php'; ?>
+        <?php
+        include '../layouts/sidebar_admin.php';
+        ?>
 
         <div class="col-md-10">
 
-            <div class="p-4">
+            <div class="content">
 
-                <h3>Data Lapangan</h3>
+                <div class="d-flex justify-content-between">
 
-                <a href="tambah_lapangan.php"
-                    class="btn btn-success mb-3">
+                    <h2>Kelola Lapangan</h2>
 
-                    Tambah Lapangan
+                    <a
+                        href="tambah_lapangan.php"
+                        class="btn btn-success">
 
-                </a>
+                        Tambah Lapangan
 
-                <table class="table table-bordered bg-white">
+                    </a>
 
-                    <tr>
+                </div>
 
-                        <th>ID</th>
-                        <th>Nama</th>
-                        <th>Jenis</th>
-                        <th>Harga</th>
-                        <th>Aksi</th>
+                <hr>
 
-                    </tr>
+                <table
+                    class="table table-bordered table-striped">
 
-                    <?php
-
-                    $data = $db->query(
-                        "SELECT * FROM lapangan"
-                    );
-
-                    while ($row = $data->fetch(PDO::FETCH_ASSOC)) {
-
-                    ?>
+                    <thead>
 
                         <tr>
 
-                            <td><?= $row['id_lapangan'] ?></td>
-
-                            <td><?= $row['nama_lapangan'] ?></td>
-
-                            <td><?= $row['jenis_olahraga'] ?></td>
-
-                            <td>
-                                Rp <?= number_format(
-                                        $row['harga_per_jam']
-                                    ) ?>
-                            </td>
-
-                            <td>
-
-                                <a href="edit_lapangan.php?id=<?= $row['id_lapangan'] ?>"
-                                    class="btn btn-warning btn-sm">
-
-                                    Edit
-
-                                </a>
-
-                                <a href="hapus_lapangan.php?id=<?= $row['id_lapangan'] ?>"
-                                    class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Hapus data?')">
-
-                                    Hapus
-
-                                </a>
-
-                            </td>
+                            <th>ID</th>
+                            <th>Nama Lapangan</th>
+                            <th>Jenis</th>
+                            <th>Harga/Jam</th>
+                            <th>Status</th>
+                            <th>Aksi</th>
 
                         </tr>
 
-                    <?php } ?>
+                    </thead>
+
+                    <tbody>
+
+                        <?php
+
+                        $data = $db->query(
+                            "SELECT * FROM lapangan"
+                        );
+
+                        while (
+                            $row =
+                            $data->fetch(PDO::FETCH_ASSOC)
+                        ) {
+
+                        ?>
+
+                            <tr>
+
+                                <td>
+                                    <?= $row['id_lapangan'] ?>
+                                </td>
+
+                                <td>
+                                    <?= $row['nama_lapangan'] ?>
+                                </td>
+
+                                <td>
+                                    <?= $row['jenis_olahraga'] ?>
+                                </td>
+
+                                <td>
+
+                                    <?php
+                                    $harga = is_numeric($row['harga_per_jam'])
+                                        ? number_format($row['harga_per_jam'])
+                                        : 0;
+                                    ?>
+
+                                    Rp <?= $harga ?>
+
+                                </td>
+
+                                <td>
+
+                                    <?= $row['status'] ?>
+
+                                </td>
+
+                                <td>
+
+                                    <a
+                                        href="edit_lapangan.php?id=<?= $row['id_lapangan'] ?>"
+                                        class="btn btn-warning btn-sm">
+
+                                        Edit
+
+                                    </a>
+
+                                    <a
+                                        href="hapus_lapangan.php?id=<?= $row['id_lapangan'] ?>"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Yakin ingin menghapus?')">
+
+                                        Hapus
+
+                                    </a>
+
+                                </td>
+
+                            </tr>
+
+                        <?php } ?>
+
+                    </tbody>
 
                 </table>
 
@@ -95,3 +137,7 @@ include '../layouts/header.php';
     </div>
 
 </div>
+
+<?php
+include '../layouts/footer.php';
+?>

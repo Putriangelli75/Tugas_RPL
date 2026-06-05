@@ -10,7 +10,7 @@
 
         <a href="dashboard.php">
 
-            <i class="bi bi-speedometer2"></i>
+            <i class="bi bi-house"></i>
 
             Dashboard
 
@@ -18,17 +18,17 @@
 
         <a href="lapangan.php">
 
-            <i class="bi bi-grid"></i>
+            <i class="bi bi-calendar-check"></i>
 
-            Kelola Lapangan
+            Booking Lapangan
 
         </a>
 
-        <a href="booking.php">
+        <a href="riwayat_booking.php">
 
-            <i class="bi bi-calendar-check"></i>
+            <i class="bi bi-clock-history"></i>
 
-            Kelola Booking
+            Riwayat Booking
 
         </a>
 
