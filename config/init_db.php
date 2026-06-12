@@ -87,6 +87,10 @@ try {
 
         status TEXT DEFAULT 'pending',
 
+        bukti_pembayaran TEXT,
+
+        metode_pembayaran TEXT,
+
         created_at DATETIME
         DEFAULT CURRENT_TIMESTAMP
 

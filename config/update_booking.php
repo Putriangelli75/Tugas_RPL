@@ -1,18 +1,17 @@
 <?php
 
-require 'koneksi.php';
+$db = new PDO(
+    "sqlite:database/splj.db"
+);
 
-try{
+$db->exec("
+ALTER TABLE booking
+ADD COLUMN bukti_pembayaran TEXT
+");
 
-    $db->exec("
-    ALTER TABLE booking
-    ADD COLUMN bukti_pembayaran TEXT
-    ");
+$db->exec("
+ALTER TABLE booking
+ADD COLUMN metode_pembayaran TEXT
+");
 
-    echo "Kolom berhasil ditambahkan";
-
-}catch(Exception $e){
-
-    echo $e->getMessage();
-
-}
+echo "Berhasil";

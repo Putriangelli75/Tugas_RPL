@@ -1,44 +1,59 @@
+<?php
+$current = basename($_SERVER['PHP_SELF']);
+?>
+
 <div class="col-md-2 p-0">
 
     <div class="sidebar">
 
+        <!-- LOGO -->
+
         <div class="sidebar-logo">
 
-            SPLJ
+            <h2>SPLJ</h2>
+
+            <small>
+                Administrator Panel
+            </small>
 
         </div>
 
-        <a href="dashboard.php">
+        <!-- MENU -->
 
-            <i class="bi bi-speedometer2"></i>
+        <ul class="sidebar-menu">
 
-            Dashboard
+            <li>
+                <a href="dashboard.php"
+                   class="<?= $current == 'dashboard.php' ? 'active' : '' ?>">
+                    📊 Dashboard
+                </a>
+            </li>
 
-        </a>
+            <li>
+                <a href="lapangan.php"
+                   class="<?= in_array($current,[
+                        'lapangan.php',
+                        'tambah_lapangan.php',
+                        'edit_lapangan.php'
+                    ]) ? 'active' : '' ?>">
+                    ⚽ Kelola Lapangan
+                </a>
+            </li>
 
-        <a href="lapangan.php">
+            <li>
+                <a href="booking.php"
+                   class="<?= $current == 'booking.php' ? 'active' : '' ?>">
+                    📅 Kelola Booking
+                </a>
+            </li>
 
-            <i class="bi bi-grid"></i>
+            <li>
+                <a href="../auth/logout.php">
+                    🚪 Logout
+                </a>
+            </li>
 
-            Kelola Lapangan
-
-        </a>
-
-        <a href="booking.php">
-
-            <i class="bi bi-calendar-check"></i>
-
-            Kelola Booking
-
-        </a>
-
-        <a href="../auth/logout.php">
-
-            <i class="bi bi-box-arrow-right"></i>
-
-            Logout
-
-        </a>
+        </ul>
 
     </div>
 

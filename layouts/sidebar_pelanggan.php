@@ -1,44 +1,61 @@
+<?php
+$current = basename($_SERVER['PHP_SELF']);
+?>
+
 <div class="col-md-2 p-0">
 
     <div class="sidebar">
 
+        <!-- LOGO -->
+
         <div class="sidebar-logo">
 
-            SPLJ
+            <h2>SPLJ</h2>
+
+            <small>Sistem Pemesanan Lapangan Jakabaring</small>
 
         </div>
 
-        <a href="dashboard.php">
+        <!-- MENU -->
 
-            <i class="bi bi-house"></i>
+        <ul class="sidebar-menu">
 
-            Dashboard
+            <li>
+                <a href="dashboard.php"
+                    class="<?= $current == 'dashboard.php' ? 'active' : '' ?>">
+                    🏠 Dashboard
+                </a>
+            </li>
 
-        </a>
+            <li>
+                <a href="lapangan.php"
+                    class="<?= $current == 'lapangan.php' ? 'active' : '' ?>">
+                    ⚽ Booking Lapangan
+                </a>
+            </li>
 
-        <a href="lapangan.php">
+            <li>
+                <a href="riwayat_booking.php"
+                    class="<?= $current == 'riwayat_booking.php' ? 'active' : '' ?>">
+                    📋 Riwayat Booking
+                </a>
+            </li>
 
-            <i class="bi bi-calendar-check"></i>
+            <li class="nav-item">
+                <a
+                    href="../pelanggan/akun.php"
+                     class="<?= $current == 'akun.php' ? 'active' : '' ?>">
+                    👤 Akun Saya
+                </a>
+            </li>
 
-            Booking Lapangan
+            <li>
+                <a href="../auth/logout.php">
+                    🚪 Logout
+                </a>
+            </li>
 
-        </a>
-
-        <a href="riwayat_booking.php">
-
-            <i class="bi bi-clock-history"></i>
-
-            Riwayat Booking
-
-        </a>
-
-        <a href="../auth/logout.php">
-
-            <i class="bi bi-box-arrow-right"></i>
-
-            Logout
-
-        </a>
+        </ul>
 
     </div>
 

@@ -15,21 +15,17 @@ require '../config/koneksi.php';
 $id_user = $_SESSION['id_user'];
 
 $data = $db->query("
-
 SELECT
-
-b.*,
-l.nama_lapangan
-
+    b.*,
+    l.nama_lapangan,
+    l.jenis_olahraga,
+    l.gambar
 FROM booking b
-
 JOIN lapangan l
 ON b.id_lapangan = l.id_lapangan
-
 WHERE b.id_user = $id_user
-
+AND b.status != 'dibatalkan'
 ORDER BY b.id_booking DESC
-
 ");
 
 include '../layouts/header.php';
@@ -38,186 +34,218 @@ include '../layouts/header.php';
 
 <div class="container-fluid">
 
-    <div class="row">
+   <?php
 
-        <?php include '../layouts/sidebar_pelanggan.php'; ?>
+if (
+    !isset($_SESSION['id_user']) ||
+    $_SESSION['role'] != 'pelanggan'
+) {
+    header("Location: ../auth/login.php");
+    exit;
+}
 
-        <div class="col-md-10">
+require '../config/koneksi.php';
 
-            <div class="content p-4">
+$id_user = $_SESSION['id_user'];
 
-                <h2 class="mb-4">
-                    Riwayat Booking
-                </h2>
+$data = $db->query("
+SELECT
+    b.*,
+    l.nama_lapangan,
+    l.jenis_olahraga,
+    l.gambar
+FROM booking b
+JOIN lapangan l
+ON b.id_lapangan = l.id_lapangan
+WHERE b.id_user = $id_user
+AND b.status != 'dibatalkan'
+ORDER BY b.id_booking DESC
+");
 
-                <div class="card shadow">
+include '../layouts/header.php';
 
-                    <div class="card-body">
+?>
 
-                        <table class="table table-bordered table-hover">
+<style>
 
-                            <thead class="table-dark">
+.booking-card{
+    border:none;
+    border-radius:20px;
+    overflow:hidden;
+}
 
-                                <tr>
+.booking-img{
+    width:100%;
+    height:220px;
+    object-fit:cover;
+    border-radius:15px;
+}
 
-                                    <th>Kode Booking</th>
+.booking-card table td{
+    border:none;
+    padding:6px 0;
+}
 
-                                    <th>Lapangan</th>
+.status-badge{
+    padding:8px 15px;
+    font-size:14px;
+}
 
-                                    <th>Tanggal</th>
+</style>
 
-                                    <th>Jam</th>
+<div class="row">
 
-                                    <th>Durasi</th>
+    <?php include '../layouts/sidebar_pelanggan.php'; ?>
 
-                                    <th>Total Bayar</th>
+    <div class="col-md-10">
 
-                                    <th>Bukti</th>
+        <div class="content p-4">
 
-                                    <th>Status</th>
+            <h2 class="mb-4">
+                Riwayat Booking
+            </h2>
 
-                                </tr>
+            <?php while($row = $data->fetch(PDO::FETCH_ASSOC)) { ?>
 
-                            </thead>
+            <div class="card shadow-sm booking-card mb-4">
 
-                            <tbody>
+                <div class="card-body p-4">
+
+                    <div class="row align-items-center">
+
+                        <!-- FOTO -->
+
+                        <div class="col-md-3">
+
+                            <?php if(!empty($row['gambar'])) { ?>
+
+                                <img
+                                    src="../uploads/<?= $row['gambar'] ?>"
+                                    class="booking-img">
+
+                            <?php } else { ?>
+
+                                <img
+                                    src="../assets/img/banner.jpg"
+                                    class="booking-img">
+
+                            <?php } ?>
+
+                        </div>
+
+                        <!-- DETAIL -->
+
+                        <div class="col-md-9">
+
+                            <div class="d-flex justify-content-between align-items-center">
+
+                                <h4 class="mb-0">
+                                    Detail Booking
+                                </h4>
 
                                 <?php
-                                while (
-                                    $row =
-                                    $data->fetch(PDO::FETCH_ASSOC)
-                                ) {
+
+                                if($row['status']=='disetujui'){
+                                    echo "<span class='badge bg-success status-badge'>Confirmed</span>";
+                                }
+                                elseif($row['status']=='pending'){
+                                    echo "<span class='badge bg-warning text-dark status-badge'>Pending</span>";
+                                }
+                                elseif($row['status']=='ditolak'){
+                                    echo "<span class='badge bg-danger status-badge'>Ditolak</span>";
+                                }
+                                elseif($row['status']=='selesai'){
+                                    echo "<span class='badge bg-primary status-badge'>Selesai</span>";
+                                }
+
                                 ?>
 
-                                    <tr>
+                            </div>
 
-                                        <td>
-                                            <?= $row['kode_booking'] ?>
-                                        </td>
+                            <hr>
 
-                                        <td>
-                                            <?= htmlspecialchars(
-                                                $row['nama_lapangan']
-                                            ) ?>
-                                        </td>
+                            <table class="table table-borderless">
 
-                                        <td>
-                                            <?= $row['tanggal_booking'] ?>
-                                        </td>
+                                <tr>
+                                    <td width="180"><b>Kode Booking</b></td>
+                                    <td><?= $row['kode_booking'] ?></td>
+                                </tr>
 
-                                        <td>
-                                            <?= $row['jam_mulai'] ?>
-                                        </td>
+                                <tr>
+                                    <td><b>Lapangan</b></td>
+                                    <td><?= $row['nama_lapangan'] ?></td>
+                                </tr>
 
-                                        <td>
-                                            <?= $row['durasi'] ?> Jam
-                                        </td>
+                                <tr>
+                                    <td><b>Jenis Olahraga</b></td>
+                                    <td><?= $row['jenis_olahraga'] ?></td>
+                                </tr>
 
-                                        <td>
-                                            Rp <?= number_format(
-                                                    $row['total_bayar']
-                                                ) ?>
-                                        </td>
+                                <tr>
+                                    <td><b>Tanggal</b></td>
+                                    <td>
+                                        <?= date(
+                                            'd M Y',
+                                            strtotime($row['tanggal_booking'])
+                                        ) ?>
+                                    </td>
+                                </tr>
 
-                                        <td>
+                                <tr>
+                                    <td><b>Jam Mulai</b></td>
+                                    <td><?= $row['jam_mulai'] ?></td>
+                                </tr>
 
-                                            <?php
-                                            if (
-                                                !empty($row['bukti_pembayaran'])
-                                            ) {
-                                            ?>
+                                <tr>
+                                    <td><b>Durasi</b></td>
+                                    <td><?= $row['durasi'] ?> Jam</td>
+                                </tr>
 
-                                                <a
-                                                    href="../uploads/<?= $row['bukti_pembayaran'] ?>"
-                                                    target="_blank">
+                                <tr>
+                                    <td><b>Total Biaya</b></td>
+                                    <td>
+                                        Rp <?= number_format(
+                                            $row['total_bayar']
+                                        ) ?>
+                                    </td>
+                                </tr>
 
-                                                    Lihat Bukti
+                            </table>
 
-                                                </a>
+                            <?php if($row['status']=='pending'){ ?>
 
-                                            <?php
-                                            } else {
-                                                echo "-";
-                                            }
-                                            ?>
+                                <div class="mt-3">
 
-                                        </td>
+                                    <a
+                                        href="verifikasi_pembayaran.php?id=<?= $row['id_booking'] ?>"
+                                        class="btn btn-success">
 
-                                        <td>
+                                        DP Sekarang
 
-                                            <?php
+                                    </a>
 
-                                            $status =
-                                                strtolower(
-                                                    $row['status']
-                                                );
+                                    <a
+                                        href="batal_booking.php?id=<?= $row['id_booking'] ?>"
+                                        class="btn btn-outline-danger"
+                                        onclick="return confirm('Batalkan booking ini?')">
 
-                                            if (
-                                                $status ==
-                                                'pending'
-                                            ) {
+                                        Batalkan Booking
 
-                                                echo "
-                                                <span class='badge bg-warning'>
-                                                    Pending
-                                                </span>
-                                                ";
-                                            } elseif (
-                                                $status ==
-                                                'disetujui'
-                                            ) {
+                                    </a>
 
-                                                echo "
-                                                <span class='badge bg-success'>
-                                                    Disetujui
-                                                </span>
-                                                ";
-                                            } elseif (
-                                                $status ==
-                                                'ditolak'
-                                            ) {
+                                </div>
 
-                                                echo "
-                                                <span class='badge bg-danger'>
-                                                    Ditolak
-                                                </span>
-                                                ";
-                                            } elseif (
-                                                $status ==
-                                                'selesai'
-                                            ) {
+                            <?php } ?>
 
-                                                echo "
-                                                <span class='badge bg-primary'>
-                                                    Selesai
-                                                </span>
-                                                ";
-                                            } else {
-
-                                                echo "
-                                                <span class='badge bg-secondary'>
-                                                    -
-                                                </span>
-                                                ";
-                                            }
-
-                                            ?>
-
-                                        </td>
-
-                                    </tr>
-
-                                <?php } ?>
-
-                            </tbody>
-
-                        </table>
+                        </div>
 
                     </div>
 
                 </div>
 
             </div>
+
+         <?php } ?>
 
         </div>
 
